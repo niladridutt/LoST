@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+**/__pycache__/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs and experiment outputs
+*.log
+wandb/
+runs/
+outputs/
+training_output/
+checkpoints/
+
+# Local generation artifacts
+manifest.jsonl
+manifest_3d.jsonl
+done_lines.txt
+done_3d.txt
+done_slots.txt
+predictions/
+semanticist3d/
+test_generated_images/
+
+# Generated model/media artifacts
+*.pt
+*.pth
+*.pkl
+*.ckpt
+*.safetensors
+*.glb
+*.obj
+*.ply
+*.png
+*.jpg
+*.jpeg
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

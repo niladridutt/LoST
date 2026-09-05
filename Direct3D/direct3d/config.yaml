@@ -1,0 +1,45 @@
+vae:
+  target: direct3d.models.vae.D3D_VAE
+  params:
+    triplane_res: 32
+    triplane_dim: 32
+    latent_dim: 16
+    num_freqs: 8
+    num_attention_heads: 12
+    attention_head_dim: 64
+    num_encoder_layers: 8
+    num_geodecoder_layers: 5
+    latents_scale: 2.45
+      
+dit:
+  target: direct3d.models.dit.D3D_DiT
+  params:
+    attention_bias: true
+    attention_head_dim: 72
+    num_attention_heads: 16
+    semantic_channels: 1024
+    pixel_channels: 1024
+    in_channels: 16
+    out_channels: 16
+    num_layers: 44
+    patch_size: 2
+    sample_size: [32, 96]
+
+semantic_encoder:
+  target: direct3d.models.condition.ClipImageEncoder
+  params:
+    version: openai/clip-vit-large-patch14 
+
+pixel_encoder:
+  target: direct3d.models.condition.DinoEncoder
+  params:
+    version: facebook/dinov2-large
+    
+scheduler:
+  target: diffusers.schedulers.EulerAncestralDiscreteScheduler
+  params:
+    num_train_timesteps: 1000
+    beta_start: 0.0001
+    beta_end: 0.02
+    beta_schedule: "linear"
+    prediction_type: "epsilon"

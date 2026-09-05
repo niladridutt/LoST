@@ -1,0 +1,73 @@
+trainer:
+  target: semanticist.engine.gpt_trainer.GPTTrainer
+  params:
+    num_epoch: 200
+    blr: 5e-5
+    cosine_lr: False
+    warmup_epochs: 0
+    batch_size: 128
+    num_workers: 32
+    pin_memory: True
+    grad_accum_steps: 1
+    precision: 'bf16'
+    max_grad_norm: 1.0
+    enable_ema: True
+    save_every: 10000
+    sample_every: 50
+    fid_every: 50000000000
+    eval_fid: False
+    result_folder: "./training_output/autoregressive_resume"
+    log_dir: "./training_output/autoregressive_resume/logs"
+    ae_cfg: 1.0
+    cfg: 6.0
+    cfg_schedule: "linear"
+    train_num_slots: 128
+    test_num_slots: 128
+    compile: False
+    enable_cache_latents: True
+    ae_model:
+      target: semanticist.stage1.diffuse_slot.DiffuseSlot
+      params:
+        encoder: 'vit_base_patch16'
+        enc_img_size: 256
+        enc_causal: True
+        num_slots: 256
+        slot_dim: 32
+        norm_slots: True
+        cond_method: 'token'
+        dit_model: 'DiT-L-2'
+        vae: 'xwen99/mar-vae-kl16'
+        num_sampling_steps: '250'
+        ckpt_path: /sensei-fs-3/users/niladrid/work/semanticist/training_output/autoregressive_resume/models/step20/custom_checkpoint_1.pkl
+
+    gpt_model:
+      target: GPT-L
+      params:
+        num_slots: 128
+        slot_dim: 32
+        num_classes: 1000
+        cls_token_num: 1
+        resid_dropout_p: 0.1
+        ffn_dropout_p: 0.1
+        diffloss_d: 12
+        diffloss_w: 1536
+        num_sampling_steps: '100'
+        diffusion_batch_mul: 4
+        use_si: True
+        cond_method: 'concat'
+        ckpt_path: /sensei-fs-3/users/niladrid/work/semanticist/training_output/autoregressive/models/step40000/custom_checkpoint_1.pkl
+
+    dataset:
+      target: semanticist.utils.datasets.SlotsNet
+      params:
+        root: /mnt/localssd/encoded_slots
+        split: train
+        # aug:  tencrop_cached # or centercrop_cached
+        img_size: (32,96)
+    
+    test_dataset:
+      target: semanticist.utils.datasets.SlotsNet
+      params:
+        root: /mnt/localssd/encoded_slots
+        split: val
+        img_size: (32,96)

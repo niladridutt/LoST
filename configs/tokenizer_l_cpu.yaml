@@ -1,0 +1,58 @@
+trainer:
+  target: src.engine.diffusion_trainer.DiffusionTrainer
+  params:
+    num_epoch: 200
+    valid_size: 48
+    blr: 2.5e-5
+    cosine_lr: True
+    warmup_epochs: 50
+    batch_size: 2
+    num_workers: 2
+    pin_memory: True
+    grad_accum_steps: 2
+    precision: 'bf16'
+    max_grad_norm: 3.0
+    enable_ema: True
+    save_every: 20000
+    sample_every: 10000
+    save_results_every: 10000
+    fid_every: 500000000000
+    result_folder: "./training_output/2x2_semantic_spatial_new/tokenizer/models_l"
+    log_dir: "./training_output/2x2_semantic_spatial_new/tokenizer/models_l/logs"
+    cfg: 3.0
+    compile: False
+    model:
+      target: src.stage1.diffuse_slot.DiffuseSlot
+      params:
+        # encoder: 'vit_base_patch16'
+        encoder: 'vit_tiny_patch16'
+        enc_img_size: [32,96]
+        enc_causal: True
+        enc_use_mlp: False
+        # num_slots: 512
+        num_slots: 128
+        slot_dim: 32
+        norm_slots: True
+        # dit_model: 'DiT-L-2'
+        dit_model: 'DiT-S-2'
+        vae: None #'xwen99/mar-vae-kl16'
+        enable_nest: False
+        enable_nest_after: 50
+        use_repa: True
+        eval_fid: False
+        fid_stats: 'fid_stats/adm_in256_stats.npz'
+        num_sampling_steps: '250'
+        ckpt_path: None
+    dataset:
+      target: src.utils.datasets.LatentsNet
+      params:
+        root: /mnt/localssd/direct3d_latents
+        split: train
+        img_size: (32,96)
+
+    test_dataset:
+      target: src.utils.datasets.LatentsNet
+      params:
+        root: /mnt/localssd/direct3d_latents
+        split: val
+        img_size: (32,96)
